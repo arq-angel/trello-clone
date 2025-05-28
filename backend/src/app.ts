@@ -6,7 +6,10 @@ import listRoutes from "./routes/list.routes";
 import taskRoutes from "./routes/task.routes";
 import commentRoutes from "./routes/comment.routes";
 import workspaceRoutes from "./routes/workspace.routes";
-import {errorResponse} from "./utils/helpers/response.format";
+import dotenv from "dotenv";
+
+// this needs to be initialized before calling and using the .env variables
+dotenv.config();
 
 const app = express();
 

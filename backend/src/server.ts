@@ -1,8 +1,5 @@
-import dotenv from 'dotenv';
 import app from "./app";
 import {connectDB} from "./config/db";
-
-dotenv.config();
 
 //simpler way to connect DB and start server for small applications
 /*// Connect to DB
