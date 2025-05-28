@@ -8,7 +8,7 @@ export interface IBoardPlain {
     name: string;
     owner: IUserShort;
     members: IUserShort[];
-    workspaceId: IWorkspaceShort;
+    workspace: IWorkspaceShort;
 }
 
 export interface IBoardShort {
@@ -22,7 +22,7 @@ export const toBoardPlain = (board: IBoard): IBoardPlain => {
         name: board.name,
         owner: toUserShort(board.owner),
         members: board.members.map(toUserShort),
-        workspaceId: toWorkspaceShort(board.workspaceId),
+        workspace: toWorkspaceShort(board.workspace),
     };
 };
 

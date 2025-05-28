@@ -139,11 +139,11 @@ export const getBoardById = async (req: AuthRequest, res: Response): Promise<voi
             return;
         }
 
-        // Populate owner, members and workspaceId with specific user fields
+        // Populate owner, members and workspace with specific user fields
         await board.populate([
             {path: 'owner', select: '_id name email'},
             {path: 'members', select: '_id name email'},
-            {path: 'workspaceId', select: '_id name'}
+            {path: 'workspace', select: '_id name'}
         ]);
 
         const plainBoard: IBoardPlain = toBoardPlain(board);

@@ -16,7 +16,7 @@ export const createBoardService = async ({input, workspace, user}: {
         name: input.name,
         owner: user.id, // using the user id from user obtained from auth middleware
         members: [user.id], // using the user id from user obtained from auth middleware
-        workspaceId: workspace.id // using the workspace id from board obtained from isWorkspaceMember middleware
+        workspace: workspace.id // using the workspace id from board obtained from isWorkspaceMember middleware
     });
 
     await board.save();
@@ -25,7 +25,7 @@ export const createBoardService = async ({input, workspace, user}: {
     await board.populate([
         {path: 'owner', select: '_id name email'},
         {path: 'members', select: '_id name email'},
-        {path: 'workspaceId', select: '_id name'}
+        {path: 'workspace', select: '_id name'}
     ]);
 
     return board;
@@ -44,7 +44,7 @@ export const updateBoardService = async ({board, input}: {
     await savedBoard.populate([
         {path: 'owner', select: '_id name email'},
         {path: 'members', select: '_id name email'},
-        {path: 'workspaceId', select: '_id name'}
+        {path: 'workspace', select: '_id name'}
     ])
 
     return savedBoard;
@@ -71,7 +71,7 @@ export const getMyBoardsService = async ({userId}: { userId: string }): Promise<
         .populate([
             {path: 'owner', select: '_id name email'},
             {path: 'members', select: '_id name email'},
-            {path: 'workspaceId', select: '_id name'}
+            {path: 'workspace', select: '_id name'}
         ]);
 
     return boards;

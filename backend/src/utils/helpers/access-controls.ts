@@ -64,7 +64,7 @@ export const userHasListAccess = async ({list, userId}: { list: IList, userId: s
             board: IBoard;
         }>({
             path: 'board',
-            select: '_id name owner members workspaceId',
+            select: '_id name owner members workspace',
         });
 
     if (!populatedList?.board) {
@@ -97,7 +97,7 @@ export const userHasTaskAccess = async ({task, userId}: { task: ITask, userId: s
             select: "_id name board position",
             populate: {
                 path: "board",
-                select: "_id name owner members workspaceId"
+                select: "_id name owner members workspace"
             }
         });
 
@@ -139,7 +139,7 @@ export const UserHasCommentAccess = async ({comment, userId}: {
                 select: "_id name board position",
                 populate: {
                     path: "board",
-                    select: "_id name owner members workspaceId",
+                    select: "_id name owner members workspace",
                 }
             }
         });
