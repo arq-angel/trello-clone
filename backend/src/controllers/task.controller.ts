@@ -5,7 +5,13 @@ import {IList} from "../models/List";
 import {IListPlain, ITaskMoved, ITaskPlain, IUserPlain, toListPlain, toTaskPlain} from "../types";
 import {getListByIdService} from "../services/list.service";
 import {CreateTaskInput, MoveTaskInput, UpdateTaskInput} from "../validators/task.validators";
-import {createTaskService, getTasksByListService, moveTaskService, updatedTaskService} from "../services/task.service";
+import {
+    createTaskService,
+    deleteTaskWithCascadeService,
+    getTasksByListService,
+    moveTaskService,
+    updatedTaskService
+} from "../services/task.service";
 import {errorResponse, successResponse} from "../utils/helpers/response.format";
 import {userHasListAccess} from "../utils/helpers/access-controls";
 
@@ -44,7 +50,7 @@ export const createTask = async (req: AuthRequest, res: Response): Promise<void>
             message: "Task created successfully",
             data: plainTask,
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.log("Error creating task: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to create task",
@@ -95,7 +101,7 @@ export const updateTask = async (req: AuthRequest, res: Response): Promise<void>
             message: "Task updated successfully",
             data: plainUpdatedTask,
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.log("Error updating task: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to update task",
@@ -120,7 +126,7 @@ export const getTasksByList = async (req: AuthRequest, res: Response): Promise<v
             message: "List tasks fetched successfully",
             data: plainTasks,
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.log("Error fetching tasks: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to fetch tasks",
@@ -147,7 +153,7 @@ export const getTaskById = async (req: AuthRequest, res: Response): Promise<void
             message: "Task fetched successfully",
             data: plainTask,
         });
-    } catch (error) {
+    } catch (error: any) {
         console.log("Error fetching task: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to fetch task",
@@ -165,13 +171,14 @@ export const deleteTask = async (req: AuthRequest, res: Response): Promise<void>
             return;
         }
 
-        await task.deleteOne();
+        const plainTask: ITaskPlain = toTaskPlain(task);
+        await deleteTaskWithCascadeService({taskId: plainTask.id});
 
         res.status(200).json(successResponse({
             message: "Task deleted successfully",
             data: null
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.log("Error updating task: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to delete task",
@@ -224,7 +231,7 @@ export const moveTask = async (req: AuthRequest, res: Response): Promise<void> =
             message: "Task moved successfully",
             data: plainMovedTask,
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.log("Error moving task: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to move task",

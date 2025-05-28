@@ -2,7 +2,8 @@ import {Response, NextFunction} from "express";
 import {AuthRequest} from "./auth.middleware";
 import {errorResponse} from "../utils/helpers/response.format";
 import {IUserPlain} from "../types";
-import {IList} from "../models/List";
+import List, {IList} from "../models/List";
+import {IBoard} from "../models/Board";
 
 export const authorizeBoardOwnerForList = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -18,16 +19,27 @@ export const authorizeBoardOwnerForList = async (req: AuthRequest, res: Response
             return;
         }
 
-        // populate the board inside the list
-        await list.populate({path: "board", select: "_id name owner members"});
+        // need to fetch a new object to properly populate the fields without violating typescript rules
+        const populatedList = await List.findById(list._id)
+            .populate<{ board: IBoard }>({
+                path: "board",
+                select: "_id name owner members workspaceId"
+            })
+            .lean(); // added for performance - remove if object is going to be manipulated down the chain
 
-        const board: any = list.board;
-        if (!board) {
-            res.status(404).json(errorResponse({error: "Board not found"}));
+        if (!populatedList?.board) {
+            res.status(404).json(errorResponse({error: "List, or board not found during access check"}));
             return;
         }
 
-        const isOwner = board.owner.toString() === user.id;
+        const board: IBoard = populatedList.board;
+        if (!board?.owner) {
+            res.status(404).json(errorResponse({error: "Board or its owner not found during access check"}));
+            return;
+        }
+
+        // Here owner is  only ObjectId so i have to use without _id
+        const isOwner = board?.owner?.toString() === user.id;
 
         if (!isOwner) {
             res.status(403).json(errorResponse({message: "Forbidden: No access to this list's board"}));

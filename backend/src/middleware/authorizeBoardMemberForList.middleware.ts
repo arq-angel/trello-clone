@@ -1,10 +1,9 @@
 import {Response, NextFunction} from "express";
 import {AuthRequest} from "./auth.middleware";
 import {errorResponse} from "../utils/helpers/response.format";
-import {IBoardPlain, IUserPlain, toBoardPlain} from "../types";
-import {IList} from "../models/List";
-import Board, {IBoard} from "../models/Board";
-
+import {IUserPlain} from "../types";
+import List, {IList} from "../models/List";
+import {IBoard} from "../models/Board";
 
 export const authorizeBoardMemberForList = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -20,32 +19,33 @@ export const authorizeBoardMemberForList = async (req: AuthRequest, res: Respons
             return;
         }
 
-        // populate the board inside the list
-        await list.populate({path: "board", select: "_id name owner members"});
+        // need to fetch a new object to properly populate the fields without violating typescript rules
+        const populatedList = await List.findById(list._id)
+            .populate<{ board: IBoard }>({
+                path: "board",
+                select: "_id name owner members workspaceId"
+            })
+            .lean(); // added for performance - remove if object is going to be manipulated down the chain
 
-        const board: any = list.board;
-        if (!board) {
-            res.status(404).json(errorResponse({error: "Board not found"}));
+        if (!populatedList?.board) {
+            res.status(404).json(errorResponse({error: "List, or board not found during access check"}));
             return;
         }
 
-        const isOwner = board.owner.toString() === user.id;
-        const isMember = board.members.some((member: any) => member._id.toString() === user.id);
+        const board: IBoard = populatedList.board;
+        if (!board?.owner || !board?.members) {
+            res.status(404).json(errorResponse({error: "Board or its owner/members not found during access check"}));
+            return;
+        }
+
+        // Here both owner and members are only ObjectId so i have to use without _id
+        const isOwner = board?.owner?.toString() === user.id;
+        const isMember = board?.members?.some(memberId => memberId.toString() === user.id);
 
         if (!isOwner && !isMember) {
             res.status(403).json(errorResponse({message: "Forbidden: No access to this list's board"}));
             return;
         }
-
-        // Fetch and attach the board object with req to use in later functions
-        const boardDoc: IBoard | undefined | null = await Board.findById(board._id);
-        if (!boardDoc) {
-            res.status(404).send({error: "Board not found"});
-            return;
-        }
-        const plainBoardDoc: IBoardPlain = toBoardPlain(boardDoc);
-        req.boardDoc = boardDoc;
-        req.board = plainBoardDoc;
 
         next();
     } catch (error: any) {

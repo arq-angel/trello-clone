@@ -3,6 +3,10 @@ import {AuthRequest} from "./auth.middleware";
 import {errorResponse} from "../utils/helpers/response.format";
 import {IUserPlain} from "../types";
 import {IList} from "../models/List";
+import Comment, {IComment} from "../models/Comment";
+import {ITask} from "../models/Task";
+import {IBoard} from "../models/Board";
+import {IUser} from "../models/User";
 
 
 export const authorizeBoardOwnerForComment = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
@@ -19,39 +23,45 @@ export const authorizeBoardOwnerForComment = async (req: AuthRequest, res: Respo
             return;
         }
 
-        await comment.populate({
-            path: "task",
-            select: "_id title",
-            populate: {
-                path: "list",
-                select: "_id name",
+        // need to fetch a new object to properly populate the fields without violating typescript rules
+        const populatedComment = await Comment.findById(comment._id)
+            .populate<{
+                task: ITask & {
+                    list: IList & {
+                        board: IBoard & {
+                            owner: IUser;
+                            members: IUser[];
+                        };
+                    };
+                };
+            }>({
+                path: "task",
+                select: "_id title description list position deuDate priority",
                 populate: {
-                    path: "board",
-                    select: "_id name owner members",
+                    path: "list",
+                    select: "_id name board position",
+                    populate: {
+                        path: "board",
+                        select: "_id name owner members workspaceId",
+                    }
                 }
-            }
-        });
+            })
+            .lean(); // added for performance - remove if object is going to be manipulated down the chain
 
-        const task = comment.task as IComment;
-        if (!task) {
-            res.status(404).json(errorResponse({error: "Task Not Found"}));
+        if (!populatedComment?.task?.list?.board) {
+            res.status(404).json(errorResponse({error: "Comment, task, list, or board not found during access check"}));
             return;
         }
 
-        const list = task.list as IList;
-        if (!list) {
-            res.status(404).json(errorResponse({error: "List Not Found"}));
+        const board: IBoard = populatedComment.task.list.board;
+        if (!board?.owner || !board?.members) {
+            res.status(404).json(errorResponse({error: "Board or its owner/members not found during access check"}));
             return;
         }
 
-        const board: any = list.board;
-        if (!board) {
-            res.status(404).json(errorResponse({error: "Board not found"}));
-            return;
-        }
-
-        const isOwner = board.owner._id.toString() === user.id;
-        const isMember = board.members.some((member: any) => member._id.toString() === user.id);
+        // Here both owner and members are only ObjectId so i have to use without _id
+        const isOwner = board?.owner?.toString() === user.id;
+        const isMember = board?.members?.some((member: any) => member._id.toString() === user.id);
 
         if (!isOwner && !isMember) {
             res.status(403).json(errorResponse({message: "Forbidden: No access to this comment's task's list's board"}));

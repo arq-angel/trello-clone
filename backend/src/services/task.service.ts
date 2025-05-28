@@ -1,5 +1,8 @@
 import Task, {ITask} from "../models/Task";
-import {MoveTaskInput} from "../validators/task.validators";
+import Comment from "../models/Comment";
+import {CreateTaskInput, UpdateTaskInput, MoveTaskInput} from "../validators/task.validators";
+import {IListPlain} from "../types";
+import mongoose from "mongoose";
 
 export const createTaskService = async ({input, list}: {
     input: CreateTaskInput,
@@ -94,4 +97,23 @@ export const getTasksByListService = async ({list}: { list: IListPlain }) => {
         ]);
 
     return tasks;
+};
+
+// Using Mongoose session for delete with multiple operations
+export const deleteTaskWithCascadeService = async ({taskId}: { taskId: string }): Promise<void> => {
+    const session = await mongoose.startSession();
+    try {
+        session.startTransaction();
+
+        await Comment.deleteMany({task: taskId}).session(session);
+
+        await Task.findByIdAndDelete(taskId).session(session);
+
+        await session.commitTransaction();
+    } catch (error) {
+        await session.abortTransaction();
+        throw error;
+    } finally {
+        session.endSession();
+    }
 };

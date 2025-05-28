@@ -1,6 +1,11 @@
 import {CreateListInput, UpdateListInput} from "../validators/list.validators";
 import List, {IList} from "../models/List";
 import {IBoardPlain} from "../types";
+import {MoveListInput} from "../validators/list.validators";
+import mongoose from "mongoose";
+import Task from "../models/Task";
+import Comment from "../models/Comment";
+import Board from "../models/Board";
 
 export const createListService = async ({input, board}: {
     input: CreateListInput;
@@ -81,4 +86,27 @@ export const getListsByBoardService = async ({board}: { board: IBoardPlain }) =>
         ]);
 
     return lists;
-}
+};
+
+// Using Mongoose session for delete with multiple operations
+export const deleteListWithCascadeService = async ({listId}: { listId: string }): Promise<void> => {
+    const session = await mongoose.startSession();
+    try {
+        session.startTransaction();
+
+        const tasks = await Task.find({list: listId}).session(session);
+        const taskIds = tasks.map(task => task._id);
+
+        await Comment.deleteMany({task: {$in: taskIds}}).session(session);
+        await Task.deleteMany({list: listId}).session(session);
+
+        await List.findByIdAndDelete(listId).session(session);
+
+        await session.commitTransaction();
+    } catch (error) {
+        await session.abortTransaction();
+        throw error;
+    } finally {
+        session.endSession();
+    }
+};

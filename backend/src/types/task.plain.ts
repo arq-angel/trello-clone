@@ -18,8 +18,8 @@ export interface ITaskShort {
 }
 
 export interface ITaskMoved {
-    position: number;
-    listId: string;
+    position?: number;
+    listId?: string;
 }
 
 export const toTaskPlain = (task: ITask): ITaskPlain => {
@@ -39,13 +39,13 @@ export const toTaskShort = (task: ITask | mongoose.Types.ObjectId | string): ITa
 
     if (typeof task === 'string' || task instanceof mongoose.Types.ObjectId) {
         return {
-            id: task.id.toString(),
+            id: task.toString(),
             title: ''
         };
     }
 
     return {
-        id: task._id.toString(),
-        title: task.title,
+        id: task._id.toString() ?? '',
+        title: task.title ?? '',
     }
 }

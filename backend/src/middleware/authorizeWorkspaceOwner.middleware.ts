@@ -23,7 +23,8 @@ export const authorizeWorkspaceOwner = (req: AuthRequest, res: Response, next: N
             return;
         }
 
-        const isOwner = workspace.owner?.toString() === (user.id);
+        // Here workspace owner is only ObjectId so i have to use without _id
+        const isOwner = workspace?.owner?.toString() === (user.id);
 
         if (!isOwner) {
             res.status(403).json(errorResponse({

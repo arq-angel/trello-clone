@@ -20,6 +20,8 @@ declare global {
             userShort?: IUserShort;
             workspaceShort?: IWorkspaceShort;
             boardShort?: IBoardShort;
+            listShort?: IListShort;
+            taskShort?: ITaskShort;
         }
     }
 }

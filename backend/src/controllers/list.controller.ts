@@ -3,7 +3,13 @@ import {IList} from "../models/List";
 import {AuthRequest} from "../middleware/auth.middleware";
 import {IBoardPlain, IListPlain, IUserPlain, toBoardPlain, toListPlain} from "../types";
 import {errorResponse, successResponse} from "../utils/helpers/response.format";
-import {createListService, getListsByBoardService, moveListService, updateListService} from "../services/list.service";
+import {
+    createListService,
+    deleteListWithCascadeService,
+    getListsByBoardService,
+    moveListService,
+    updateListService
+} from "../services/list.service";
 import {IBoard} from "../models/Board";
 import {userHasBoardAccess} from "../utils/helpers/access-controls";
 import {getBoardByIdService} from "../services/board.service";
@@ -41,7 +47,7 @@ export const createList = async (req: AuthRequest, res: Response): Promise<void>
             message: "List created successfully",
             data: plainList
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.log("Error creating list: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to create list",
@@ -72,7 +78,7 @@ export const updateList = async (req: AuthRequest, res: Response): Promise<void>
             message: "List updated successfully",
             data: plainUpdatedList
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.log("Error updating list: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to update list",
@@ -98,7 +104,7 @@ export const getListsByBoard = async (req: AuthRequest, res: Response): Promise<
             message: "Board lists fetched successfully",
             data: plainLists
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.log("Error fetching lists: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to fetch lists",
@@ -126,7 +132,7 @@ export const getListById = async (req: AuthRequest, res: Response): Promise<void
             message: "List fetched successfully",
             data: plainList
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.log("Error fetching list: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to fetch list",
@@ -144,12 +150,14 @@ export const deleteList = async (req: AuthRequest, res: Response): Promise<void>
             return;
         }
 
-        await list.deleteOne();
+        const plainList: IListPlain = toListPlain(list);
+        await deleteListWithCascadeService({listId: plainList.id})
+
         res.status(200).json(successResponse({
             message: "List successfully deleted",
             data: null
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.log("Error deleting list: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to delete list",
@@ -180,7 +188,7 @@ export const moveList = async (req: AuthRequest, res: Response): Promise<void> =
             message: "List moved successfully",
             data: plainUpdatedList
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.log("Error moving list: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to move list",

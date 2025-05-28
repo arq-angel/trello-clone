@@ -3,7 +3,12 @@ import {IWorkspace} from "../models/Workspace";
 import {AuthRequest} from "../middleware/auth.middleware";
 import {IUserPlain, IWorkspacePlain, toWorkspacePlain} from "../types";
 import {errorResponse, successResponse} from "../utils/helpers/response.format";
-import {createWorkspaceService, getMyWorkspacesService, updateWorkspaceService} from "../services/workspace.service";
+import {
+    createWorkspaceService,
+    deleteWorkspaceWithCascadeService,
+    getMyWorkspacesService,
+    updateWorkspaceService
+} from "../services/workspace.service";
 import {CreateWorkspaceInput, UpdateWorkspaceInput} from "../validators/workspace.validators";
 
 export const createWorkspace = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -26,7 +31,7 @@ export const createWorkspace = async (req: AuthRequest, res: Response): Promise<
             message: "Workspace created successfully",
             data: plainWorkspace
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error creating workspace: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to create workspace",
@@ -55,7 +60,7 @@ export const updateWorkspace = async (req: AuthRequest, res: Response): Promise<
             message: "Workspace updated successfully",
             data: plainUpdatedWorkspace
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error updating workspace: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to update workspace",
@@ -80,7 +85,7 @@ export const getMyWorkspaces = async (req: AuthRequest, res: Response): Promise<
             message: "Workspaces fetched successfully",
             data: plainWorkspaces
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error fetching workspaces: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to fetch workspaces",
@@ -109,7 +114,7 @@ export const getWorkspaceById = async (req: AuthRequest, res: Response): Promise
             message: "Workspace fetched successfully",
             data: plainWorkspace
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error fetching workspace: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to fetch workspace",
@@ -126,13 +131,14 @@ export const deleteWorkspace = async (req: AuthRequest, res: Response): Promise<
             return;
         }
 
-        await workspace.deleteOne();
+        const plainWorkspace: IWorkspacePlain = toWorkspacePlain(workspace);
+        await deleteWorkspaceWithCascadeService({workspaceId: plainWorkspace.id});
 
         res.status(200).json(successResponse({
             message: "Workspace successfully deleted",
             data: null
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error deleting workspace: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to delete workspace",

@@ -22,7 +22,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
             message: "User registered successfully",
             data: {user: plainUser, token}
         }));
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json(errorResponse({message: "Server error", error: error.stack,}));
         return;
     }
@@ -40,7 +40,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             message: "User logged in successfully",
             data: {user: plainUser, token}
         }));
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json(errorResponse({message: "Server error", error: error.stack,}));
         return;
     }

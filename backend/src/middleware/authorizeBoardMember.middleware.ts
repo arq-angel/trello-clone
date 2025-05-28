@@ -19,8 +19,9 @@ export const authorizeBoardMember = (req: AuthRequest, res: Response, next: Next
             return;
         }
 
-        const isOwner = board.owner?.toString() === (user.id);
-        const isMember = board.members.some(member => member._id.toString() === user.id);
+        // Here board owner and author are only ObjectId so i have to use without _id
+        const isOwner = board?.owner?.toString() === (user.id);
+        const isMember = board?.members?.some(memberId => memberId.toString() === user.id);
 
         if (!isOwner && !isMember) {
             res.status(403).json(errorResponse({message: "Forbidden: No access to this board",}));

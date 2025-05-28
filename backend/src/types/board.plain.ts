@@ -34,7 +34,7 @@ export const toBoardShort = (board: IBoard | mongoose.Types.ObjectId | string): 
     }
 
     return {
-        id: board._id.toString() ?? board.id.toString(),
+        id: board._id.toString() ?? '',
         name: board.name ?? '',
     }
 }

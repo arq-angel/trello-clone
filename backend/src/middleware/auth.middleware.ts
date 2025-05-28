@@ -49,7 +49,7 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
 
             req.user = toUserPlain(user);
             next();
-        } catch (error) {
+        } catch (error: any) {
             res.status(401).json(errorResponse({
                 message: 'Unauthorized',
                 error: error.stack,

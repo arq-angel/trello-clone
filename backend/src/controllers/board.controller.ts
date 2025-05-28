@@ -3,7 +3,12 @@ import {IBoard} from "../models/Board";
 import {AuthRequest} from "../middleware/auth.middleware";
 import {IBoardPlain, IUserPlain, toBoardPlain, toWorkspacePlain} from "../types";
 import {CreateBoardInput} from "../validators/boards.validators";
-import {createBoardService, getMyBoardsService, updateBoardService} from "../services/board.service";
+import {
+    createBoardService,
+    deleteBoardWithCascadeService,
+    getMyBoardsService,
+    updateBoardService
+} from "../services/board.service";
 import {errorResponse, successResponse} from "../utils/helpers/response.format";
 import {IWorkspace} from "../models/Workspace";
 import {getWorkspaceByIdService} from "../services/workspace.service";
@@ -45,7 +50,7 @@ export const createBoard = async (req: AuthRequest, res: Response): Promise<void
             message: "Board created successfully",
             data: plainBoard,
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error creating board: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to create board",
@@ -92,7 +97,7 @@ export const updateBoard = async (req: AuthRequest, res: Response): Promise<void
             message: "Board updated successfully",
             data: plainUpdatedBoard,
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error updating board: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to update board",
@@ -117,7 +122,7 @@ export const getMyBoards = async (req: AuthRequest, res: Response): Promise<void
             message: "Boards fetched successfully",
             data: plainBoards,
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error fetching boards: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to fetch boards",
@@ -147,7 +152,7 @@ export const getBoardById = async (req: AuthRequest, res: Response): Promise<voi
             message: "Board fetched successfully",
             data: plainBoard
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error fetching board: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to fetch board",
@@ -164,12 +169,14 @@ export const deleteBoard = async (req: AuthRequest, res: Response): Promise<void
             return;
         }
 
-        await board.deleteOne();
+        const plainBoard: IBoardPlain = toBoardPlain(board);
+        await deleteBoardWithCascadeService({boardId: plainBoard.id});
+
         res.status(200).json(successResponse({
             message: "Board successfully deleted",
             data: null
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error deleting board: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to delete board",

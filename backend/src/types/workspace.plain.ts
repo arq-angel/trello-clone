@@ -33,7 +33,7 @@ export const toWorkspaceShort = (workspace: IWorkspace | mongoose.Types.ObjectId
     }
     // Populated user object
     return {
-        id: workspace._id?.toString() ?? workspace.toString(),
+        id: workspace._id?.toString() ?? '',
         name: workspace.name ?? '',
     }
 }

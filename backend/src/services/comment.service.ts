@@ -1,5 +1,5 @@
 import {CreateCommentInput} from "../validators/comment.validators";
-import {ITaskPlain} from "../types";
+import {ITaskPlain, IUserPlain} from "../types";
 import Comment from "../models/Comment";
 
 export const createCommentService = async ({user, task, input}: {

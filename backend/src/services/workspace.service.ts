@@ -1,6 +1,11 @@
 import Workspace, {IWorkspace} from "../models/Workspace";
 import {CreateWorkspaceInput, UpdateWorkspaceInput} from "../validators/workspace.validators";
 import {IUserPlain} from "../types";
+import mongoose from "mongoose";
+import Board from "../models/Board";
+import List from "../models/List";
+import Task from "../models/Task";
+import Comment from "../models/Comment";
 
 export const createWorkspaceService = async ({input, user}: {
     input: CreateWorkspaceInput,
@@ -64,5 +69,34 @@ export const getMyWorkspacesService = async ({userId}: { userId: string }): Prom
     return workspaces;
 };
 
-// deleteWorkspace doesn't really need a service function because it only has one line of code after receiving
-// workspace object from routeModelBinder middleware
+// Using Mongoose session for delete with multiple operations
+export const deleteWorkspaceWithCascadeService = async ({workspaceId}: { workspaceId: string }): Promise<void> => {
+    const session = await mongoose.startSession();
+    try {
+        session.startTransaction();
+
+        const boards = await Board.find({workspace: workspaceId}).session(session);
+        const boardIds = boards.map(board => board._id);
+
+        const lists = await List.find({board: {$in: boardIds}}).session(session);
+        const listIds = lists.map(list => list._id);
+
+        const tasks = await Task.find({list: {$in: listIds}}).session(session);
+        const taskIds = tasks.map(task => task._id);
+
+        await Comment.deleteMany({task: {$in: taskIds}}).session(session);
+        await Task.deleteMany({list: {$in: listIds}}).session(session);
+        await List.deleteMany({board: {$in: boardIds}}).session(session);
+        await Board.deleteMany({workspace: workspaceId}).session(session);
+
+        await Workspace.findByIdAndDelete(workspaceId).session(session);
+
+        await session.commitTransaction();
+    } catch (error) {
+        await session.abortTransaction();
+        throw error;
+    } finally {
+        session.endSession();
+    }
+};
+

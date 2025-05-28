@@ -1,6 +1,7 @@
 import mongoose, {Document, Schema} from "mongoose";
 
 export interface IComment extends Document {
+    _id: mongoose.Types.ObjectId;
     text: string;
     task: mongoose.Types.ObjectId;
     author: mongoose.Types.ObjectId;

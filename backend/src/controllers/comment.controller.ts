@@ -1,12 +1,13 @@
 import {Response} from "express";
 import {IComment} from "../models/Comment";
 import {AuthRequest} from "../middleware/auth.middleware";
-import {ITaskPlain, IUserPlain, toCommentPlain, toTaskPlain} from "../types";
+import {ICommentPlain, ITaskPlain, IUserPlain, toCommentPlain, toTaskPlain} from "../types";
 import {CreateCommentInput} from "../validators/comment.validators";
 import {getTaskByIdService} from "../services/task.service";
 import {errorResponse, successResponse} from "../utils/helpers/response.format";
 import {createCommentService, getCommentsByTaskService} from "../services/comment.service";
 import {userHasTaskAccess} from "../utils/helpers/access-controls";
+import {ITask} from "../models/Task";
 
 export const createComment = async (req: AuthRequest, res: Response) => {
     try {
@@ -14,7 +15,7 @@ export const createComment = async (req: AuthRequest, res: Response) => {
 
         const user: IUserPlain | undefined = req.user;
         if (!user) {
-            res.status(404).json(errorResponse({errormessage: `User not found`}));
+            res.status(404).json(errorResponse({message: `User not found`}));
             return;
         }
 
@@ -44,7 +45,7 @@ export const createComment = async (req: AuthRequest, res: Response) => {
             message: "Comment added successfully",
             data: plainComment
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error adding comment: ", error);
         return res.status(500).json(errorResponse({
             message: "Failed to add comment",
@@ -63,13 +64,13 @@ export const getCommentsByTask = async (req: AuthRequest, res: Response) => {
 
         const comments: IComment[] = await getCommentsByTaskService({task})
 
-        const plainComments: IComment[] = comments.map(toCommentPlain);
+        const plainComments: ICommentPlain[] = comments.map(toCommentPlain);
 
         res.status(200).json(successResponse({
             message: "Task comments fetched successfully",
             data: plainComments
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error fetching comments: ", error);
         return res.status(500).json(errorResponse({
             message: "Failed to fetch comments",
@@ -80,7 +81,7 @@ export const getCommentsByTask = async (req: AuthRequest, res: Response) => {
 
 export const deleteComment = async (req: AuthRequest, res: Response) => {
     try {
-        const comment: IComment | null = req.commentDoc;
+        const comment: IComment | undefined = req.commentDoc;
         if (!comment) {
             res.status(404).json(errorResponse({message: "Comment not found"}));
             return;
@@ -92,7 +93,7 @@ export const deleteComment = async (req: AuthRequest, res: Response) => {
             message: "Comment successfully deleted",
             data: null
         }));
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error deleting comment: ", error);
         res.status(500).json(errorResponse({
             message: "Failed to delete comment",
