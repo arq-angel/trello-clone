@@ -79,7 +79,6 @@ export const getListByIdService = async ({id}: { id: string }): Promise<IList | 
 };
 
 export const getListsByBoardService = async ({board}: { board: IBoardPlain }) => {
-// using board object received from isBoardMember middleware
     const lists: IList[] = await List.find({board: board.id}).sort('position')
         .populate([
             {path: 'board', select: '_id name'},

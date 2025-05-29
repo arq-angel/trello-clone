@@ -1,12 +1,12 @@
 import {Response} from "express";
 import {IBoard} from "../models/Board";
 import {AuthRequest} from "../middleware/auth.middleware";
-import {IBoardPlain, IUserPlain, toBoardPlain, toWorkspacePlain} from "../types";
+import {IBoardPlain, IUserPlain, IWorkspacePlain, toBoardPlain, toWorkspacePlain} from "../types";
 import {CreateBoardInput} from "../validators/boards.validators";
 import {
     createBoardService,
     deleteBoardWithCascadeService,
-    getMyBoardsService,
+    getBoardsByWorkspaceService,
     updateBoardService
 } from "../services/board.service";
 import {errorResponse, successResponse} from "../utils/helpers/response.format";
@@ -106,15 +106,15 @@ export const updateBoard = async (req: AuthRequest, res: Response): Promise<void
     }
 };
 
-export const getMyBoards = async (req: AuthRequest, res: Response): Promise<void> => {
+export const getBoardsByWorkspace = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const user: IUserPlain | undefined = req.user;
-        if (!user) {
-            res.status(404).json(errorResponse({message: "User not found"}));
+        const workspace: IWorkspacePlain | undefined = req.workspace;
+        if (!workspace) {
+            res.status(404).json(errorResponse({message: "Workspace not found"}));
             return;
         }
 
-        const boards = await getMyBoardsService({userId: user.id,});
+        const boards = await getBoardsByWorkspaceService({workspace});
 
         const plainBoards: IBoardPlain[] = boards.map(toBoardPlain);
 

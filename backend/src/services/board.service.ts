@@ -65,9 +65,8 @@ export const getBoardByIdService = async ({id}: { id: string }): Promise<IBoard 
     return board;
 };
 
-export const getMyBoardsService = async ({userId}: { userId: string }): Promise<IBoard[]> => {
-
-    const boards: IBoard[] = await Board.find({members: userId})
+export const getBoardsByWorkspaceService = async ({workspace}: { workspace: IWorkspacePlain }): Promise<IBoard[]> => {
+    const boards: IBoard[] = await Board.find({workspace: workspace.id}).sort('createdAt')
         .populate([
             {path: 'owner', select: '_id name email'},
             {path: 'members', select: '_id name email'},

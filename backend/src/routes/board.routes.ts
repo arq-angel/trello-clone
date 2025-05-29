@@ -2,7 +2,7 @@ import express = require('express');
 import {
     createBoard,
     updateBoard,
-    getMyBoards,
+    getBoardsByWorkspace,
     deleteBoard,
     getBoardById
 } from "../controllers/board.controller";
@@ -11,15 +11,28 @@ import {validate} from "../middleware/validate.middleware";
 import {CreateBoardSchema, UpdateBoardSchema} from "../validators/boards.validators";
 import {modelBinder} from "../middleware/routeModelBinder.middleware";
 import Board from "../models/Board";
-import {toBoardPlain} from "../types";
+import {toBoardPlain, toWorkspacePlain} from "../types";
 import {authorizeBoardMember} from "../middleware/authorizeBoardMember.middleware";
 import {authorizeBoardOwner} from "../middleware/authorizeBoardOwner.middleware";
+import {authorizeWorkspaceMember} from "../middleware/authorizeWorkspaceMember.middleware";
+import Workspace from "../models/Workspace";
 
 const router = express.Router();
 
-router.route("/")
-    .post(protect, validate(CreateBoardSchema), createBoard)
-    .get(protect, getMyBoards);
+router.route("/").post(protect, validate(CreateBoardSchema), createBoard);
+
+router.get('/workspace/:workspaceId',
+    protect,
+    modelBinder({
+        param: "workspaceId",
+        model: Workspace,
+        key: "workspaceDoc",
+        plainKey: "workspace",
+        toPlain: toWorkspacePlain
+    }),
+    authorizeWorkspaceMember,
+    getBoardsByWorkspace,
+);
 
 router.route("/:id")
     .get(
