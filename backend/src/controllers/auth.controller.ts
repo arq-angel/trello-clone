@@ -23,7 +23,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
             data: {user: plainUser, token}
         }));
     } catch (error: any) {
-        res.status(500).json(errorResponse({message: "Server error", error: error.stack,}));
+        res.status(500).json(errorResponse({message: "Register Failed", error: error.message,}));
         return;
     }
 };
@@ -41,7 +41,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             data: {user: plainUser, token}
         }));
     } catch (error: any) {
-        res.status(500).json(errorResponse({message: "Server error", error: error.stack,}));
+        res.status(500).json(errorResponse({message: "Login Failed", error: error.message,}));
         return;
     }
 }
