@@ -1,6 +1,7 @@
 import User, {IUser} from "../models/User";
 import {LoginInput, RegisterInput} from "../validators/auth.validators";
 import jwt from "jsonwebtoken";
+import {validationError} from "../utils/helpers/http-errors";
 
 interface JwtPayload {
     id: string;
@@ -39,12 +40,18 @@ export const createUser = async (input: RegisterInput): Promise<{ token: string,
 export const loginUser = async (input: LoginInput): Promise<{ token: string, user: IUser }> => {
     const user: IUser | null = await User.findOne({email: input.email});
     if (!user) {
-        throw new Error("Invalid email or password");
+        // Throw error with field info and message
+        throw validationError("Validation failed", {
+            "email": ["Invalid email or password"],
+        });
     }
 
     const isMatch = await user.matchPassword(input.password);
     if (!isMatch) {
-        throw new Error("Invalid email or password");
+        // Throw error with field info and message
+        throw validationError("Validation failed", {
+            "email": ["Invalid email or password"],
+        });
     }
 
     const token = generateToken(user);

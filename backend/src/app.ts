@@ -7,6 +7,7 @@ import taskRoutes from "./routes/task.routes";
 import commentRoutes from "./routes/comment.routes";
 import workspaceRoutes from "./routes/workspace.routes";
 import dotenv from "dotenv";
+import {globalErrorHandler} from "./middleware/errorHandler.middleware";
 
 // this needs to be initialized before calling and using the .env variables
 dotenv.config();
@@ -38,7 +39,7 @@ app.use('/api/tasks', taskRoutes);
 // Comment Routes
 app.use('/api/comments', commentRoutes);
 
-// Error handling middleware (must be last)
+/*// Error handling middleware (must be last)
 app.use((err: any, req: any, res: any, next: any) => {
     const isDev = process.env.NODE_ENV === "development";
 
@@ -58,7 +59,9 @@ app.use((err: any, req: any, res: any, next: any) => {
         message: err.message ?? "Internal Server Error",
         error: isDev ? err.stack : undefined
     });
-});
+});*/
 
+// New global error handler
+app.use(globalErrorHandler);
 
 export default app;
