@@ -7,5 +7,5 @@ export const UserShortSchema = z.object({
 });
 
 export const UserSchema = UserShortSchema.extend({
-    role: z.string(),
+    role: z.enum(['user', 'admin']),
 });

@@ -23,6 +23,12 @@ export const RegisterUserInputSchema = LoginUserInputSchema.extend({
 
 })
 
+export const DummyRegisterUserInputSchema = z.object({
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(3, "Password should be at least 6 characters"),
+    name: z.string().min(3, "Name should be at least 3 characters"),
+})
+
 export type ILoginUserParams = z.infer<typeof LoginUserInputSchema>;
 
 export type IRegisterUserParams = z.infer<typeof RegisterUserInputSchema>;

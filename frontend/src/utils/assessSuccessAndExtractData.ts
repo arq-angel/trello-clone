@@ -1,13 +1,17 @@
-// utils/extractSuccessData.ts
-interface SuccessApiResponse<T> {
-    success: boolean;
-    data: T;
-    message?: string;
+import type {IAPIResponse} from "../api/types.ts";
+
+export function assessSuccessAndExtractData<T>(response: IAPIResponse<T>): T {
+    // assess the success flag
+    if (!response.success) {
+        throw new Error(response.message ?? response.error ?? "Unknown API error");
+    }
+
+    // assess the data
+    if (response.data === undefined) {
+        throw new Error("API response marked success, but data is missing");
+    }
+
+    // Return the extracted data
+    return response.data;
 }
 
-export const extractData = <T>(response: SuccessApiResponse<T>): T => {
-    if (!response.success) {
-        throw new Error(response.message ?? `Error occurred while fetching data.`);
-    }
-    return response.data;
-};

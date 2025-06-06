@@ -1,17 +1,23 @@
-import {ZodSchema, ZodError} from "zod";
+import {ZodSchema} from "zod";
+import {createBadRequestError} from "./api-errors";
 
 /**
- * Validates an API response using a provided Zod schema.
- * Throws a detailed ZodError if validation fails.
+ * Validates API response data with the given Zod schema.
+ * Throws a custom APIError with structured validation details on failure.
  */
-export const validateApiResponse = <T>(data: unknown, schema: ZodSchema<T>): T => {
-    // validate the response data
+export function validateApiResponseData<T>(data: unknown, schema: ZodSchema<T>): T {
     const result = schema.safeParse(data);
 
     if (!result.success) {
-        // Throw the actual ZodError for better granularity and catching downstream
-        throw new ZodError(result.error.errors);
+        // Map Zod errors to APIError details format
+        const details = result.error.errors.map(e => ({
+            path: e.path,
+            message: e.message,
+        }));
+
+        // Throw a standardized APIError to be caught downstream
+        throw createBadRequestError("Response validation failed", details);
     }
 
     return result.data;
-};
+}

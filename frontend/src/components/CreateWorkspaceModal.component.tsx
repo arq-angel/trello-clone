@@ -6,7 +6,7 @@ interface CreateWorkspaceModalProps {
     onSubmit: (name: string) => void;
 }
 
-const CreateWorkspaceModal = ({isOpen, onClose, onSubmit}: CreateWorkspaceModalProps) => {
+const CreateWorkspaceModalComponent = ({isOpen, onClose, onSubmit}: CreateWorkspaceModalProps) => {
     const [name, setName] = useState("");
 
     const handleSubmit = () => {
@@ -49,4 +49,4 @@ const CreateWorkspaceModal = ({isOpen, onClose, onSubmit}: CreateWorkspaceModalP
     );
 };
 
-export default CreateWorkspaceModal;
+export default CreateWorkspaceModalComponent;

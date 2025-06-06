@@ -1,19 +1,42 @@
-import type {IAPIResponse} from "../api/types.ts";
-import {createBadRequestError} from "./api-errors.ts"; // adjust path if needed
+import type {IAPIResponse} from "../api/types";
+import {createBadRequestError} from "./api-errors";
+import type {ValidationErrorDetail} from "./api-errors";
 
-export function assessApiResponse<T>(responseFromAxios: IAPIResponse<T>): T {
-    if (!responseFromAxios.success) {
-        // Throw APIError with message and details (if any)
+/**
+ * Validates an API response that should follow the IAPIResponse<T> structure.
+ * Ensures success is true and data is present, otherwise throws APIError.
+ */
+
+
+export function validateApiResponseSuccess<T>(apiResponse: IAPIResponse<T>): T {
+    if (!apiResponse.success) {
+        let details: ValidationErrorDetail[] | undefined = undefined;
+
+        if (apiResponse.errors && typeof apiResponse.errors === "object" && !Array.isArray(apiResponse.errors)) {
+            // Normalize object-based errors
+            details = Object.entries(apiResponse.errors).flatMap(([field, messages]) =>
+                (Array.isArray(messages) ? messages : [String(messages)]).map((msg) => ({
+                    path: [field],
+                    message: msg,
+                }))
+            );
+        } else if (Array.isArray(apiResponse.errors)) {
+            // Already an array of ValidationErrorDetail[]
+            details = apiResponse.errors as ValidationErrorDetail[];
+        }
+
         throw createBadRequestError(
-            responseFromAxios.message ?? responseFromAxios.error ?? "Unknown API error",
-            responseFromAxios.errors
+            apiResponse.message ?? apiResponse.error ?? "Unknown API error",
+            details
         );
     }
 
-    if (responseFromAxios.data === undefined) {
-        // Missing data despite success = true, throw error
+    if (apiResponse.data === undefined || apiResponse.data === null) {
         throw createBadRequestError("API response marked success, but data is missing");
     }
 
-    return responseFromAxios.data;
+    return apiResponse.data;
 }
+
+
+

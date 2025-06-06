@@ -1,30 +1,56 @@
-export class APIError extends Error {
-    public readonly status: number;
-    public readonly details?: unknown;
+export interface ValidationErrorDetail {
+    path: (string | number)[];
+    message: string;
+}
 
-    constructor(message: string, status: number, details?: unknown) {
+export type ErrorSource = "client" | "server" | "network" | "unknown";
+
+export class APIError extends Error {
+    public statusCode: number;
+    public details?: ValidationErrorDetail[];
+    public source: ErrorSource;
+
+    constructor(
+        message: string,
+        statusCode: number = 500,
+        details?: ValidationErrorDetail[],
+        source: ErrorSource = "unknown"
+    ) {
         super(message);
         this.name = "APIError";
-        this.status = status;
+        this.statusCode = statusCode;
         this.details = details;
-
-        // Set the prototype explicitly (for instanceof to work)
-        Object.setPrototypeOf(this, APIError.prototype);
+        this.source = source;
     }
 }
 
-// Common HTTP error factories
-export const createBadRequestError = (message = "Bad Request", details?: unknown) =>
-    new APIError(message, 400, details);
+// Factory helpers
+export const createError = (
+    message: string,
+    statusCode: number,
+    details?: ValidationErrorDetail[],
+    source: ErrorSource = "unknown"
+) => new APIError(message, statusCode, details, source);
 
-export const createUnauthorizedError = (message = "Unauthorized", details?: unknown) =>
-    new APIError(message, 401, details);
+export const createBadRequestError = (
+    message = "Bad Request",
+    details?: ValidationErrorDetail[],
+    source: ErrorSource = "client"
+) => createError(message, 400, details, source);
 
-export const createForbiddenError = (message = "Forbidden", details?: unknown) =>
-    new APIError(message, 403, details);
+export const createUnauthorizedError = (message = "Unauthorized", details?: ValidationErrorDetail[]) =>
+    createError(message, 401, details, "server");
 
-export const createNotFoundError = (message = "Not Found", details?: unknown) =>
-    new APIError(message, 404, details);
+export const createForbiddenError = (message = "Forbidden", details?: ValidationErrorDetail[]) =>
+    createError(message, 403, details, "server");
 
-export const createInternalServerError = (message = "Internal Server Error", details?: unknown) =>
-    new APIError(message, 500, details);
+export const createNotFoundError = (message = "Not Found", details?: ValidationErrorDetail[]) =>
+    createError(message, 404, details, "server");
+
+export const createInternalServerError = (message = "Internal Server Error", details?: ValidationErrorDetail[]) =>
+    createError(message, 500, details, "server");
+
+// Type guard
+export const isAPIError = (error: unknown): error is APIError => {
+    return error instanceof APIError;
+};

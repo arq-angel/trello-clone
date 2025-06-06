@@ -1,7 +1,7 @@
 import {useState} from "react";
-import {useAppDispatch} from "../hooks.ts";
+import {useAppDispatch} from "../hooks";
 import * as React from "react";
-import {createBoard} from "../features/boards/board.slice.ts";
+import {createBoard} from "../features/boards/board.thunks";
 
 interface CreateListFormProps {
     workspaceId: string;
