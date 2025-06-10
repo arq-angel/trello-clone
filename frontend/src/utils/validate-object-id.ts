@@ -5,6 +5,8 @@ export function validateObjectId(id: unknown, fieldName = "id"): string {
     const result = schema.safeParse(id);
 
     if (!result.success) {
+
+        console.log(result.error);
         throw result.error;
     }
 

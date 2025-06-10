@@ -1,34 +1,33 @@
 import {useState} from "react";
 import {useAppDispatch} from "../hooks";
 import * as React from "react";
-import {createList, fetchListsByBoardId} from "../features/lists/list.thunks";
+import {createComment, fetchCommentsByTaskId} from "../features/comments/comment.thunks.ts";
 
-interface CreateListFormProps {
-    boardId: string;
+interface CreateCommentFormProps {
+    taskId: string;
     setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const CreateListFormComponent = ({boardId, setModalOpen}: CreateListFormProps) => {
-    const [name, setName] = useState("");
-    const [position, setPosition] = useState(1);
+const CreateCommentFormComponent = ({taskId, setModalOpen}: CreateCommentFormProps) => {
+    const [text, setText] = useState("");
 
     const dispatch = useAppDispatch();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!name.trim()) return;
+        if (!text.trim()) return;
 
         try {
-            await dispatch(createList({name, boardId, position})).unwrap();
-            setName("");
+            await dispatch(createComment({taskId, text})).unwrap();
+            setText("");
             setModalOpen(false);
         } catch (error) {
             alert(error);
         }
 
         try {
-            dispatch(fetchListsByBoardId({boardId})).unwrap();
+            dispatch(fetchCommentsByTaskId({taskId})).unwrap();
         } catch (error) {
             alert(error);
         }
@@ -41,9 +40,9 @@ const CreateListFormComponent = ({boardId, setModalOpen}: CreateListFormProps) =
         >
             <input
                 type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="New List Name"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Add a comment"
                 required
                 className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -51,11 +50,10 @@ const CreateListFormComponent = ({boardId, setModalOpen}: CreateListFormProps) =
                 type="submit"
                 className="bg-blue-500 text-white px-4 py-2 rounded-md hover:cursor-pointer hover:bg-blue-600 transition duration-200"
             >
-                Add List
+                Add Comment
             </button>
         </form>
-
     );
 };
 
-export default CreateListFormComponent;
+export default CreateCommentFormComponent;

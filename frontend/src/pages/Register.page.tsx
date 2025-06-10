@@ -36,64 +36,58 @@ const RegisterPage = () => {
     };
 
     return (
-        <>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-sm mx-auto">
+        <div className="flex items-center justify-center h-screen bg-gray-100">
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="bg-white p-6 rounded-xl shadow-lg w-96 space-y-4"
+            >
+                <h2 className="text-2xl font-semibold text-center">Login</h2>
+
                 <div>
+                    <label className="block text-sm mb-1">Name</label>
                     <input
-                        {...register("name")}
-                        placeholder="Name"
-                        className="w-full border p-2 rounded"
+                        {...register("name", {required: "Name is required"})}
+                        className="w-full p-2 border border-gray-300 rounded-md"
                     />
-                    {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+                    {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
                 </div>
 
                 <div>
+                    <label className="block text-sm mb-1">Email</label>
                     <input
-                        {...register("email")}
-                        placeholder="Email"
-                        className="w-full border p-2 rounded"
+                        {...register("email", {required: "Email is required"})}
+                        className="w-full p-2 border border-gray-300 rounded-md"
                     />
-                    {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+                    {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
                 </div>
 
                 <div>
+                    <label className="block text-sm mb-1">Password</label>
                     <input
-                        {...register("password")}
                         type="password"
-                        placeholder="Password"
-                        className="w-full border p-2 rounded"
+                        {...register("password", {required: "Password is required"})}
+                        className="w-full p-2 border border-gray-300 rounded-md"
                     />
-                    {errors.password && <p className="text-red-500">{errors.password.message}</p>}
+                    {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
                 </div>
-
-                {/*<div>
-                <input
-                    {...register("confirmPassword")}
-                    type="password"
-                    placeholder="Confirm Password"
-                    className="w-full border p-2 rounded"
-                />
-                {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword.message}</p>}
-            </div>*/}
 
                 <button
                     type="submit"
-                    className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+                    className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700"
                     disabled={isSubmitting}
                 >
-                    {isSubmitting ? "Registering..." : "Register"}
+                    Register
                 </button>
-            </form>
-            <p className="text-center text-sm text-gray-600 mt-4">
-                Already have an account?{" "}
-                <Link to="/login" className="text-blue-600 hover:underline">
-                    Login
-                </Link>
-            </p>
-        </>
-    )
-        ;
 
+                <p className="text-sm text-center">
+                    Already have an account?{" "}
+                    <Link to="/login" className="text-blue-500 hover:underline">
+                        Login
+                    </Link>
+                </p>
+            </form>
+        </div>
+    );
 }
 
 export default RegisterPage;

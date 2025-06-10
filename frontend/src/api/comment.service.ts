@@ -61,7 +61,7 @@ export const deleteCommentAPI = async ({commentId}: { commentId: string }) => {
     );
 
     // Step 3: Check if API response success flag is true and extract data
-    validateApiResponseSuccess(data);
+    validateApiResponseSuccess(data, true);
 
     // Step 5: Return the validated id
     return validatedCommentId;

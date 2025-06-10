@@ -5,14 +5,14 @@ import RegisterPage from "./pages/Register.page.tsx";
 import DashboardPage from "./pages/Dashboard.page.tsx";
 import ProtectedRoutes from "./routes/ProtectedRoutes.tsx";
 import PublicRoute from "./routes/PublicRoute.tsx";
-import NavbarComponent from "./components/Navbar.component.tsx";
-import BoardPage from "./pages/Board.page.tsx";
-import WorkspacePage from "./pages/Workspace.page.tsx";
+import Navbar from "./components/Navbar.component.tsx";
+import BoardListsPage from "./pages/BoardLists.page.tsx";
+import WorkspaceBoardsPage from "./pages/WorkspaceBoards.page.tsx";
 
 function App() {
     return (
         <Router>
-            <NavbarComponent/>
+            <Navbar/>
             <Routes>
                 <Route
                     path="/login"
@@ -39,18 +39,18 @@ function App() {
                     }
                 />
                 <Route
-                    path="/workspaces/:workspaceId"
+                    path="/workspaces/:workspaceId/boards"
                     element={
                         <ProtectedRoutes>
-                            <WorkspacePage/>
+                            <WorkspaceBoardsPage/>
                         </ProtectedRoutes>
                     }
                 />
                 <Route
-                    path="/boards/:boardId"
+                    path="/workspaces/:workspaceId/boards/:boardId/lists"
                     element={
                         <ProtectedRoutes>
-                            <BoardPage/>
+                            <BoardListsPage/>
                         </ProtectedRoutes>
                     }
                 />

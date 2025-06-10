@@ -14,7 +14,7 @@ api.interceptors.request.use(
         return config;
     });
 
-/*api.interceptors.response.use(
+api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
@@ -24,6 +24,6 @@ api.interceptors.request.use(
         }
         return Promise.reject(new Error(error.message ?? "Something went wrong"));
     }
-)*/
+)
 
 export default api;

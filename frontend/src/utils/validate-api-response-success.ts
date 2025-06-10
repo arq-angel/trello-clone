@@ -8,7 +8,7 @@ import type {ValidationErrorDetail} from "./api-errors";
  */
 
 
-export function validateApiResponseSuccess<T>(apiResponse: IAPIResponse<T>): T {
+export function validateApiResponseSuccess<T>(apiResponse: IAPIResponse<T>, isDeleteResponse: boolean = false): T {
     if (!apiResponse.success) {
         let details: ValidationErrorDetail[] | undefined = undefined;
 
@@ -31,7 +31,7 @@ export function validateApiResponseSuccess<T>(apiResponse: IAPIResponse<T>): T {
         );
     }
 
-    if (apiResponse.data === undefined || apiResponse.data === null) {
+    if (!isDeleteResponse && apiResponse.data === undefined || apiResponse.data === null) {
         throw createBadRequestError("API response marked success, but data is missing");
     }
 
