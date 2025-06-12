@@ -26,7 +26,13 @@ const commentSlice = createSlice({
             })
             .addCase(fetchCommentsByTaskId.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message ?? "Failed to fetch comments";
+                if (action.payload) {
+                    state.error = action.payload.message;
+                    state.validationErrors = action.payload.errors ?? [];
+                } else {
+                    state.error = action.error.message ?? "Failed to fetch comments";
+                    state.validationErrors = [];
+                }
             })
 
             // Create comment
@@ -45,7 +51,13 @@ const commentSlice = createSlice({
             })
             .addCase(createComment.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message ?? "Failed to create comment";
+                if (action.payload) {
+                    state.error = action.payload.message;
+                    state.validationErrors = action.payload.errors ?? [];
+                } else {
+                    state.error = action.error.message ?? "Failed to create comment";
+                    state.validationErrors = [];
+                }
             })
 
             // Delete comment
@@ -64,7 +76,13 @@ const commentSlice = createSlice({
             })
             .addCase(deleteComment.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message ?? "Failed to delete comment";
+                if (action.payload) {
+                    state.error = action.payload.message;
+                    state.validationErrors = action.payload.errors ?? [];
+                } else {
+                    state.error = action.error.message ?? "Failed to delete comment";
+                    state.validationErrors = [];
+                }
             });
     },
 })

@@ -14,11 +14,11 @@ export const SingleWorkspaceSchema = WorkspaceShortSchema.extend({
 export const MultipleWorkspacesSchema = z.array(SingleWorkspaceSchema);
 
 export const CreateWorkspaceInputSchema = z.object({
-    name: z.string().min(1, "Workspace name should be at least 3 characters"),
+    name: z.string().min(3, "Workspace name should be at least 3 characters"),
 });
 
 export const UpdateWorkspaceInputSchema = z.object({
-    name: z.string().min(1, "Workspace name should be at least 3 characters"),
+    name: z.string().min(3, "Workspace name should be at least 3 characters"),
 });
 
 export const WorkspaceIdSchema = z.object({

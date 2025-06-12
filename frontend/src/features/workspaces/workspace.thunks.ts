@@ -3,10 +3,10 @@ import {
     createWorkspaceAPI, deleteWorkspaceAPI,
     fetchAllWorkspacesAPI,
     fetchSingleWorkspaceByWorkspaceIdAPI, updateWorkspaceAPI
-} from "../../api/workspace.service.ts";
-import type {IWorkspace} from "../../models";
-import {handleThunkError, type RejectedPayload} from "../../utils/handleThunkError.ts";
-import {type ICreateWorkspaceParams} from "../../schemas";
+} from "@/api/workspace.service.ts";
+import type {IWorkspace} from "@/models";
+import {handleThunkError, type RejectedPayload} from "@/utils/handleThunkError.ts";
+import {type ICreateWorkspaceParams} from "@/schemas";
 
 export const fetchSingleWorkspaceByWorkspaceId = createAsyncThunk<
     IWorkspace, // Return type of fulfilled action

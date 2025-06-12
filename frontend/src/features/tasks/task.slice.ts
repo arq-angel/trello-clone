@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import type {ITaskState} from "../../api/model.states.ts";
+import type {ITaskState} from "@/api/model.states.ts";
 import {createTask, deleteTask, fetchTasksByListId, moveTask, updateTask} from "./task.thunks.ts";
 
 const initialState: ITaskState = {
@@ -43,7 +43,13 @@ const taskSlice = createSlice({
             })
             .addCase(fetchTasksByListId.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message ?? "Failed to fetch tasks";
+                if (action.payload) {
+                    state.error = action.payload.message;
+                    state.validationErrors = action.payload.errors ?? [];
+                } else {
+                    state.error = action.error.message ?? "Failed to fetch tasks";
+                    state.validationErrors = [];
+                }
             })
 
             // Create task
@@ -65,7 +71,13 @@ const taskSlice = createSlice({
             })
             .addCase(createTask.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message ?? "Failed to create task";
+                if (action.payload) {
+                    state.error = action.payload.message;
+                    state.validationErrors = action.payload.errors ?? [];
+                } else {
+                    state.error = action.error.message ?? "Failed to create task";
+                    state.validationErrors = [];
+                }
             })
 
             // Update task
@@ -101,7 +113,13 @@ const taskSlice = createSlice({
             })
             .addCase(updateTask.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message ?? "Failed to update list";
+                if (action.payload) {
+                    state.error = action.payload.message;
+                    state.validationErrors = action.payload.errors ?? [];
+                } else {
+                    state.error = action.error.message ?? "Failed to update task";
+                    state.validationErrors = [];
+                }
             })
 
             // Move task
@@ -137,7 +155,13 @@ const taskSlice = createSlice({
             })
             .addCase(moveTask.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message ?? "Failed to update list";
+                if (action.payload) {
+                    state.error = action.payload.message;
+                    state.validationErrors = action.payload.errors ?? [];
+                } else {
+                    state.error = action.error.message ?? "Failed to move task";
+                    state.validationErrors = [];
+                }
             })
 
             // Delete task
@@ -156,7 +180,13 @@ const taskSlice = createSlice({
             })
             .addCase(deleteTask.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message ?? "Failed to delete task";
+                if (action.payload) {
+                    state.error = action.payload.message;
+                    state.validationErrors = action.payload.errors ?? [];
+                } else {
+                    state.error = action.error.message ?? "Failed to delete task";
+                    state.validationErrors = [];
+                }
             });
     },
 });

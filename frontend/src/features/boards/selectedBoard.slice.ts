@@ -1,5 +1,5 @@
 import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
-import type {IBoard} from "../../models";
+import type {IBoard} from "@/models";
 
 const selectedBoardSlice = createSlice({
     name: "selectedBoard",

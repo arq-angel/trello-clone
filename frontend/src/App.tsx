@@ -2,12 +2,12 @@ import './App.css';
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import LoginPage from "./pages/Login.page.tsx";
 import RegisterPage from "./pages/Register.page.tsx";
-import DashboardPage from "./pages/Dashboard.page.tsx";
+import Dashboard from "./pages/Dashboard.page.tsx";
 import ProtectedRoutes from "./routes/ProtectedRoutes.tsx";
 import PublicRoute from "./routes/PublicRoute.tsx";
 import Navbar from "./components/Navbar.component.tsx";
-import BoardListsPage from "./pages/BoardLists.page.tsx";
-import WorkspaceBoardsPage from "./pages/WorkspaceBoards.page.tsx";
+import Lists from "./pages/Lists.page.tsx";
+import Boards from "./pages/Boards.tsx";
 
 function App() {
     return (
@@ -34,7 +34,7 @@ function App() {
                     path="/"
                     element={
                         <ProtectedRoutes>
-                            <DashboardPage/>
+                            <Dashboard/>
                         </ProtectedRoutes>
                     }
                 />
@@ -42,7 +42,7 @@ function App() {
                     path="/workspaces/:workspaceId/boards"
                     element={
                         <ProtectedRoutes>
-                            <WorkspaceBoardsPage/>
+                            <Boards/>
                         </ProtectedRoutes>
                     }
                 />
@@ -50,7 +50,7 @@ function App() {
                     path="/workspaces/:workspaceId/boards/:boardId/lists"
                     element={
                         <ProtectedRoutes>
-                            <BoardListsPage/>
+                            <Lists/>
                         </ProtectedRoutes>
                     }
                 />

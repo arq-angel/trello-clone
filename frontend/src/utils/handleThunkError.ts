@@ -1,7 +1,7 @@
 import { ZodError } from "zod";
 import { APIError } from "./api-errors.ts"; // Adjust the path as needed
 
-type ValidationError = { path: (string | number)[]; message: string };
+export type ValidationError = { path: (string | number)[]; message: string };
 
 export interface RejectedPayload {
     message: string;

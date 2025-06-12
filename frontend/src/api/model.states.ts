@@ -1,9 +1,22 @@
-import type {IBoard, IComment, IList, ITask, IWorkspace} from "../models";
+import type {IBoard, IComment, IList, ITask, IWorkspace} from "@/models";
+
+interface ValidationError {
+    path: (string | number)[];
+    message: string
+}
 
 export interface IWorkspaceState {
-    workspaces: IWorkspace[]
-    loading: boolean
-    error: string | null
+    workspaces: IWorkspace[];
+    loading: boolean;
+    fetching: boolean;
+    submitting: boolean;
+    deleting: boolean;
+    error: string | null;
+    fetchError: string | null;
+    createError: string | null;
+    updateError: string | null;
+    deleteError: string | null;
+    validationErrors?: ValidationError[];
 }
 
 export interface IBoardState {
@@ -11,7 +24,15 @@ export interface IBoardState {
         [workspaceId: string]: IBoard[];
     }
     loading: boolean;
+    fetching: boolean;
+    submitting: boolean;
+    deleting: boolean;
     error: string | null;
+    fetchError: string | null;
+    createError: string | null;
+    updateError: string | null;
+    deleteError: string | null;
+    validationErrors?: ValidationError[];
 }
 
 export interface IListState {
@@ -19,7 +40,15 @@ export interface IListState {
         [boardId: string]: IList[];
     }
     loading: boolean;
+    fetching: boolean;
+    submitting: boolean;
+    deleting: boolean;
     error: string | null;
+    fetchError: string | null;
+    createError: string | null;
+    updateError: string | null;
+    deleteError: string | null;
+    validationErrors?: ValidationError[];
 }
 
 export interface ITaskState {
@@ -27,7 +56,15 @@ export interface ITaskState {
         [listId: string]: ITask[];
     };
     loading: boolean;
+    fetching: boolean;
+    submitting: boolean;
+    deleting: boolean;
     error: string | null;
+    fetchError: string | null;
+    createError: string | null;
+    updateError: string | null;
+    deleteError: string | null;
+    validationErrors?: ValidationError[];
 }
 
 export interface ICommentState {
@@ -35,5 +72,13 @@ export interface ICommentState {
         [taskId: string]: IComment[];
     }
     loading: boolean;
+    fetching: boolean;
+    submitting: boolean;
+    deleting: boolean;
     error: string | null;
+    fetchError: string | null;
+    createError: string | null;
+    updateError: string | null;
+    deleteError: string | null;
+    validationErrors?: ValidationError[];
 }

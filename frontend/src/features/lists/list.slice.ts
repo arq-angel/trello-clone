@@ -44,7 +44,13 @@ const listSlice = createSlice({
             })
             .addCase(fetchListsByBoardId.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message ?? "Failed to fetch lists";
+                if (action.payload) {
+                    state.error = action.payload.message;
+                    state.validationErrors = action.payload.errors ?? [];
+                } else {
+                    state.error = action.error.message ?? "Failed to fetch lists";
+                    state.validationErrors = [];
+                }
             })
 
             // Create list
@@ -67,7 +73,13 @@ const listSlice = createSlice({
             })
             .addCase(createList.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message ?? "Failed to create list";
+                if (action.payload) {
+                    state.error = action.payload.message;
+                    state.validationErrors = action.payload.errors ?? [];
+                } else {
+                    state.error = action.error.message ?? "Failed to create list";
+                    state.validationErrors = [];
+                }
             })
 
             // Updated list
@@ -101,7 +113,13 @@ const listSlice = createSlice({
             })
             .addCase(updateList.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message ?? "Failed to update list";
+                if (action.payload) {
+                    state.error = action.payload.message;
+                    state.validationErrors = action.payload.errors ?? [];
+                } else {
+                    state.error = action.error.message ?? "Failed to update list";
+                    state.validationErrors = [];
+                }
             })
 
             // Move list
@@ -135,7 +153,13 @@ const listSlice = createSlice({
             })
             .addCase(moveList.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message ?? "Failed to update list";
+                if (action.payload) {
+                    state.error = action.payload.message;
+                    state.validationErrors = action.payload.errors ?? [];
+                } else {
+                    state.error = action.error.message ?? "Failed to move list";
+                    state.validationErrors = [];
+                }
             })
 
             // Delete list
@@ -154,7 +178,13 @@ const listSlice = createSlice({
             })
             .addCase(deleteList.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message ?? "Failed to delete list";
+                if (action.payload) {
+                    state.error = action.payload.message;
+                    state.validationErrors = action.payload.errors ?? [];
+                } else {
+                    state.error = action.error.message ?? "Failed to delete list";
+                    state.validationErrors = [];
+                }
             });
     },
 })

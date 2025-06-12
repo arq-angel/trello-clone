@@ -7,7 +7,7 @@ import {
     MultipleListsSchema,
     SingleListSchema,
     UpdateListInputSchema
-} from "../schemas";
+} from "@/schemas";
 import type {IAPIResponse} from "./types.ts";
 import {validateObjectId} from "../utils/validate-object-id.ts";
 import {callApi} from "./callApi.ts";

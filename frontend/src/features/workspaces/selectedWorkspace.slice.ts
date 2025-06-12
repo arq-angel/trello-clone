@@ -1,5 +1,5 @@
 import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
-import type {IWorkspace} from "../../models";
+import type {IWorkspace} from "@/models";
 
 const selectedWorkspaceSlice = createSlice({
     name: "selectedWorkspace",

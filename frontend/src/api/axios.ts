@@ -22,8 +22,11 @@ api.interceptors.response.use(
             localStorage.removeItem('user');
             window.location.href = '/login';
         }
-        return Promise.reject(new Error(error.message ?? "Something went wrong"));
+
+        // ✅ Don't wrap the error — pass it through as-is
+        return Promise.reject(error);
     }
-)
+);
+
 
 export default api;

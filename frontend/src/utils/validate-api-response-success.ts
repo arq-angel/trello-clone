@@ -31,11 +31,11 @@ export function validateApiResponseSuccess<T>(apiResponse: IAPIResponse<T>, isDe
         );
     }
 
-    if (!isDeleteResponse && apiResponse.data === undefined || apiResponse.data === null) {
+    if (!isDeleteResponse && (apiResponse.data === undefined || apiResponse.data === null)) {
         throw createBadRequestError("API response marked success, but data is missing");
     }
 
-    return apiResponse.data;
+    return apiResponse.data as T;
 }
 
 

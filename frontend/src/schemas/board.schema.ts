@@ -16,12 +16,12 @@ export const SingleBoardSchema = BoardShortSchema.extend({
 export const MultipleBoardsSchema = z.array(SingleBoardSchema);
 
 export const CreateBoardInputSchema = z.object({
-    name: z.string().min(1, "Board name should be at least 3 characters"),
+    name: z.string().min(3, "Board name should be at least 3 characters"),
     workspaceId: z.string().length(24, "Invalid workspace ID"),
 });
 
 export const UpdateBoardInputSchema = z.object({
-    name: z.string().min(1, "Board name should be at least 3 characters"),
+    name: z.string().min(3, "Board name should be at least 3 characters"),
     workspaceId: z.string().length(24, "Invalid workspace ID"),
 });
 

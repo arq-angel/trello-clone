@@ -14,13 +14,13 @@ export const SingleListSchema = ListShortSchema.extend({
 export const MultipleListsSchema = z.array(SingleListSchema);
 
 export const CreateListInputSchema = z.object({
-    name: z.string(),
+    name: z.string().min(3, "Name must be at least 3 characters"),
     boardId: z.string().length(24, "Invalid list ID"),
     position: z.number().min(1, "Invalid list position"),
 })
 
 export const UpdateListInputSchema = z.object({
-    name: z.string(),
+    name: z.string().min(3, "Name must be at least 3 characters"),
     position: z.number().min(1, "Invalid list position"),
 })
 

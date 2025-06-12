@@ -20,15 +20,17 @@ interface RejectedPayload {
 
 export function handleApiError<TFieldValues extends FieldValues>(
     error: unknown,
-    setError?: UseFormSetError<TFieldValues>
+    setError?: UseFormSetError<TFieldValues>,
+    log?: boolean,
 ) {
-    // console.log("handleApiError received error:", error);
+
+    const isDev = process.env.NODE_ENV === "development";
+
+    if (log || isDev) console.error("handleApiError:", error);
 
     // ✅ 1. Handle errors in plain object form (from rejectWithValue)
     if (isRejectedPayload(error)) {
         const {message, errors} = error;
-
-        toast.error(message);
 
         if (errors && setError) {
             errors.forEach(({path, message}) => {
