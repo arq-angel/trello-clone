@@ -4,7 +4,7 @@ import type {RootState} from "../app/store.ts";
 import {toast} from "react-hot-toast";
 import WorkspaceCard from "../components/WorkspaceCard.component.tsx";
 import CreateWorkspaceModal from "@/components/modals/CreateWorkspace.modal.tsx";
-import LoadingSpinner from "@/components/LoadingSpinner.component.tsx";
+import LoadingSpinner from "@/components/ui-components/LoadingSpinner.component.tsx";
 
 const Dashboard = () => {
     const {workspaces, fetching, fetchError} = useSelector((state: RootState) => state.workspaces);

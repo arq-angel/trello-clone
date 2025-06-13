@@ -5,7 +5,15 @@ import {createTask, deleteTask, fetchTasksByListId, moveTask, updateTask} from "
 const initialState: ITaskState = {
     tasksByList: {},
     loading: false,
+    fetching: false,
+    submitting: false,
+    deleting: false,
     error: null,
+    fetchError: null,
+    createError: null,
+    updateError: null,
+    deleteError: null,
+    validationErrors: [],
 };
 
 const taskSlice = createSlice({

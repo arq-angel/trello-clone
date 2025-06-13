@@ -4,7 +4,6 @@ import {ArrowRight, Ellipsis, Trash2} from "lucide-react";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import MenuItem from "@/components/ui-components/MenuItem.ui.tsx";
-import UpdateWorkspaceModal from "@/components/modals/UpdateWorkspaceModal.tsx";
 import {confirmDialog} from "@/utils/confirm-dailog.ts";
 import toast from "react-hot-toast";
 import {useAppDispatch} from "@/hooks.ts";

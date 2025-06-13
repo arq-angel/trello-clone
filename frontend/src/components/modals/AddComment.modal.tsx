@@ -12,9 +12,18 @@ interface FormValues {
 interface AddCommentModalProps {
     task: ITask;
     isMenuModal: boolean;
+    setOpen?: (open: boolean) => void;
+    className?: string;
 }
 
-const AddCommentModal = ({task, isMenuModal = false}: AddCommentModalProps) => {
+const AddCommentModal = ({
+                             task,
+                             isMenuModal = false,
+                             setOpen = () => {
+                                 return null;
+                             },
+                             className
+                         }: AddCommentModalProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const {
@@ -38,6 +47,7 @@ const AddCommentModal = ({task, isMenuModal = false}: AddCommentModalProps) => {
         const {success} = await createComment(data.text.trim(), task.id);
         if (success) {
             closeModal();
+            setOpen(false);
         }
     };
 
@@ -46,30 +56,29 @@ const AddCommentModal = ({task, isMenuModal = false}: AddCommentModalProps) => {
             {!isMenuModal && (
                 <button
                     onClick={openModal}
-                    className="px-3 py-1 bg-blue-500 hover:bg-blue-600 hover:cursor-pointer text-white rounded"
+                    className={`px-3 py-1 bg-blue-500 hover:bg-blue-600 hover:cursor-pointer text-white rounded ${className}`}
                 >
                     <div className="flex items-center gap-1">
                         <Plus/>
-                        <span>Create Comment</span>
+                        <span>Add Comment</span>
                     </div>
                 </button>
             )}
 
             {isMenuModal && (<MenuItem icon={Plus}
-                                       label="Create Comment"
+                                       label="Add Comment"
                                        onClick={openModal}
-                                       className="text-blue-500 hover:bg-blue-100 w-full"
+                                       className={`text-blue-500 hover:bg-blue-100 w-full ${className}`}
                 />
             )}
 
             {isOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
                     <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-                        <h2 className="text-xl font-semibold mb-4">Create New Comment</h2>
+                        <h2 className="text-xl font-semibold mb-4">Add New Comment</h2>
 
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <textarea
-                                type="text"
                                 placeholder="Enter your comment"
                                 {...register("text", {required: "Comment is required"})}
                                 className="w-full p-2 border rounded mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"

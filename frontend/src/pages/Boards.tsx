@@ -4,7 +4,7 @@ import type {RootState} from "@/app/store.ts";
 import {useEffect} from "react";
 import {toast} from "react-hot-toast";
 import {useMatch} from "react-router-dom";
-import LoadingSpinner from "@/components/LoadingSpinner.component.tsx";
+import LoadingSpinner from "@/components/ui-components/LoadingSpinner.component.tsx";
 import CreateBoardModal from "@/components/modals/CreateBoard.modal.tsx";
 import BoardCard from "@/components/BoardCard.component.tsx";
 

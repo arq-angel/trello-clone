@@ -10,7 +10,7 @@ import {useWorkspaceActions} from "@/hooks/useWorkspaceActions.ts";
 interface WorkspacesDropdownProps {
     workspaces: IWorkspace[];
     selectedWorkspace: IWorkspace;
-    handleSelectWorkspace: (workspace: IWorkspace) => void;
+    handleSelectWorkspace: (workspaceId: string) => void;
 }
 
 interface FormValues {
@@ -58,6 +58,7 @@ const WorkspacesDropDown = ({workspaces, selectedWorkspace, handleSelectWorkspac
 
     const onSubmit = async (data: FormValues) => {
         const {success, data: newWorkspace} = await createWorkspace(data.name.trim());
+        if (!newWorkspace) return;
         if (success) {
             dispatch(setSelectedWorkspace(newWorkspace));
             navigate(`/workspaces/${newWorkspace.id}/boards`);

@@ -3,7 +3,6 @@ import {useAppDispatch, useAppSelector} from "../hooks.ts";
 import {useSelector} from "react-redux";
 import type {RootState} from "../app/store.ts";
 import {useEffect, useState} from "react";
-import {fetchWorkspaces} from "../features/workspaces/workspace.thunks.ts";
 import {setSelectedWorkspace} from "../features/workspaces/selectedWorkspace.slice.ts";
 import {
     House,

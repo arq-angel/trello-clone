@@ -12,10 +12,18 @@ interface FormValues {
 interface AddTaskModalProps {
     list: IList;
     isMenuModal: boolean;
-    setOpen: (open: boolean) => void;
+    setOpen?: (open: boolean) => void;
+    className?: string;
 }
 
-const AddTaskModal = ({list, isMenuModal = false, setOpen}: AddTaskModalProps) => {
+const AddTaskModal = ({
+                          list,
+                          isMenuModal = false,
+                          setOpen = () => {
+                              return null;
+                          },
+                          className
+                      }: AddTaskModalProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const {
@@ -52,22 +60,22 @@ const AddTaskModal = ({list, isMenuModal = false, setOpen}: AddTaskModalProps) =
                 >
                     <div className="flex items-center gap-1">
                         <Plus/>
-                        <span>Create Task</span>
+                        <span>Add Task</span>
                     </div>
                 </button>
             )}
 
             {isMenuModal && (<MenuItem icon={Plus}
-                                       label="Create Task"
+                                       label="Add Task"
                                        onClick={openModal}
-                                       className="text-blue-500 hover:bg-blue-100 w-full"
+                                       className={`text-blue-500 hover:bg-blue-100 w-full ${className}`}
                 />
             )}
 
             {isOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
                     <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-                        <h2 className="text-xl font-semibold mb-4">Create New Task</h2>
+                        <h2 className="text-xl font-semibold mb-4">Add New Task</h2>
 
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <input

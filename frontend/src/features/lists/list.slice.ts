@@ -6,7 +6,15 @@ import {createList, deleteList, fetchListsByBoardId, moveList, updateList} from 
 const initialState: IListState = {
     listsByBoard: {},
     loading: false,
-    error: null
+    fetching: false,
+    submitting: false,
+    deleting: false,
+    error: null,
+    fetchError: null,
+    createError: null,
+    updateError: null,
+    deleteError: null,
+    validationErrors: [],
 };
 
 const listSlice = createSlice({

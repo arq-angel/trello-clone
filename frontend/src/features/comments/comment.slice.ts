@@ -5,7 +5,15 @@ import {createComment, deleteComment, fetchCommentsByTaskId} from "./comment.thu
 const initialState: ICommentState = {
     commentsByTask: {},
     loading: false,
-    error: null
+    fetching: false,
+    submitting: false,
+    deleting: false,
+    error: null,
+    fetchError: null,
+    createError: null,
+    updateError: null,
+    deleteError: null,
+    validationErrors: [],
 };
 
 const commentSlice = createSlice({
