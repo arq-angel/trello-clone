@@ -47,7 +47,10 @@ const ListSettings = ({list, board}: ListSettingsProps) => {
         <div className="relative" ref={menuRef}>
             <MenuItem
                 icon={Ellipsis}
-                onClick={() => setOpen(prev => !prev)}
+                onClick={() => {
+                    console.log("Hello")
+                    setOpen(prev => !prev)
+                }}
                 className="rounded"
             />
             {open && (

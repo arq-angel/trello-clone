@@ -1,75 +1,86 @@
 import ListSettings from "@/components/list-card-components/ListSettings.component.tsx";
-import type {IBoard, IList} from "@/models";
+import type {IBoard, IList, ITask} from "@/models";
 import {useTaskActions} from "@/hooks/useTaskActions.ts";
-import {useEffect} from "react";
-import {useSelector} from "react-redux";
-import type {RootState} from "@/app/store.ts";
 import LoadingSpinner from "@/components/ui-components/LoadingSpinner.component.tsx";
 import AddTaskModal from "@/components/modals/AddTask.modal.tsx";
-import TaskItemModal from "./modals/TaskItem.modal";
+import {SortableTaskCard} from "@/components/SortableTaskCard.component.tsx";
+import {
+    DndContext,
+    closestCenter,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragOverlay,
+} from "@dnd-kit/core";
+import {
+    SortableContext,
+    verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import {useState} from "react";
 
 interface ListCardProps {
     board: IBoard;
     list: IList;
+    tasks: ITask[];
+    tasksFetching: boolean;
+    dragListeners?: any;
 }
 
-const ListCard = ({board, list}: ListCardProps) => {
-    const {fetchAllTasks} = useTaskActions();
-    useEffect(() => {
-        const fetchData = async () => {
-            await fetchAllTasks(list.id);
-        }
-        fetchData();
-    }, [list, fetchAllTasks]);
-
-    const {tasksByList, fetching, fetchError} = useSelector((state: RootState) => state.tasks);
-
-
+const ListCard = ({board, list, tasks, tasksFetching, dragListeners}: ListCardProps) => {
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 8,
+            },
+        })
+    );
 
     return (
         <div
-            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow flex flex-col h-auto min-h-[400px] min-w-[250px]"
-        >
+            className="bg-white rounded-lg shadow-md p-6 mb-6 hover:shadow-lg transition-shadow flex flex-col h-auto min-h-[400px] min-w-[250px]">
             {/* Header */}
             <div className="flex justify-between items-center mb-4">
-                <div className="text-lg font-semibold">{list.name}</div>
+                <div className="flex justify-start items-center gap-3">
+                    <div className="text-lg font-semibold">{list.name}</div>
+                    <span
+                        {...dragListeners}
+                        className="cursor-grab"
+                        title="Drag to move list"
+                    >
+                        ⠿
+                    </span>
+                </div>
                 <ListSettings list={list} board={board}/>
             </div>
 
             {/* Loading state */}
-            {fetching && <LoadingSpinner message="Loading tasks..."/>}
+            {tasksFetching && <LoadingSpinner message="Loading tasks..."/>}
 
             {/* Empty state */}
-            {!fetching && !fetchError && tasksByList[list.id]?.length === 0 && (
+            {!tasksFetching && tasks.length === 0 && (
                 <div className="text-center mt-20 text-gray-500">
                     <p className="text-lg text-gray-500">No tasks yet.</p>
                 </div>
             )}
 
-            {/* tasks list */}
-            {!fetching && !fetchError && tasksByList[list.id]?.length > 0 && (
-                <div className="flex flex-col justify-start items-start gap-4 mb-3">
-                    {tasksByList[list.id].map((task) => (
-                        <TaskItemModal
-                            key={task.id}
-                            label={task.title}
-                            task={task}
-                            list={list}
-                            className={`w-full bg-gray-100 text-black rounded px-4 py-2 border-b-5 
-                                    ${(task.priority === "low") ? "border-blue-500" : ""}
-                                    ${(task.priority === "medium") ? "border-yellow-500" : ""}
-                                    ${(task.priority === "high") ? "border-red-500" : ""}
-                            `}
-                        />
-                    ))}
+            {/* Tasks list */}
+            {!tasksFetching && tasks.length > 0 && (
+                <SortableContext
+                    items={tasks.map(task => task.id)}
+                    strategy={verticalListSortingStrategy}
+                >
+                    <div className="flex flex-col justify-start items-start gap-4 mb-3">
+                        {tasks.map((task: ITask) => (
+                            <SortableTaskCard key={task.id} task={task} list={list}/>
+                        ))}
+                    </div>
+                </SortableContext>
 
-                </div>
             )}
 
             <div className="mt-auto">
                 <AddTaskModal list={list} isMenuModal={true} className="w-full bg-gray-100 rounded px-4 py-2"/>
             </div>
-
         </div>
     );
 };

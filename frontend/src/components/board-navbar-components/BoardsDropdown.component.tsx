@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 import {setSelectedBoard} from "@/features/boards/selectedBoard.slice.ts";
 import {useForm} from "react-hook-form";
 import {useBoardActions} from "@/hooks/useBoardsActions.ts";
+import type {IBoard, IWorkspace} from "@/models";
 
 interface BoardsDropdownProps {
     workspace: IWorkspace;
@@ -51,6 +52,7 @@ const BoardsDropdown = ({workspace, boards, selectedBoard, handleSelectBoard}: B
         register,
         handleSubmit,
         setError,
+        reset,
         formState: {errors, isSubmitting},
     } = useForm<FormValues>();
 
@@ -61,6 +63,7 @@ const BoardsDropdown = ({workspace, boards, selectedBoard, handleSelectBoard}: B
         if (success) {
             dispatch(setSelectedBoard(newBoard));
             navigate(`/workspaces/${workspace.id}/boards/${newBoard.id}/lists`);
+            reset();
         }
     };
 

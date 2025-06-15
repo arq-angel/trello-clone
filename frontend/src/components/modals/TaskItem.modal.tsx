@@ -17,9 +17,19 @@ interface TaskItemModalProps {
     onClick?: () => void;
     className?: string;
     disabled?: boolean;
+    dragListeners?: React.HTMLAttributes<HTMLElement>; // or more specific
 }
 
-const TaskItemModal = ({icon: Icon, label, task, list, onClick, className, disabled}: TaskItemModalProps) => {
+const TaskItemModal = ({
+                           icon: Icon,
+                           label,
+                           task,
+                           list,
+                           onClick,
+                           className,
+                           disabled,
+                           dragListeners
+                       }: TaskItemModalProps) => {
     const [commentsCount, setCommentsCount] = useState(0);
 
     const {fetchAllComments} = useCommentActions();
@@ -70,7 +80,14 @@ const TaskItemModal = ({icon: Icon, label, task, list, onClick, className, disab
     }, [task, commentsByTask, setCommentsCount]);
 
     return (
-        <>
+        <div className="flex gap-1 items-center">
+            <span
+                {...dragListeners}
+                className="cursor-grab"
+                title="Drag to move task"
+            >
+                     ⠿
+            </span>
             <button
                 onClick={() => {
                     if (disabled) return;
@@ -118,7 +135,8 @@ const TaskItemModal = ({icon: Icon, label, task, list, onClick, className, disab
                         <div className="mt-auto flex flex-col gap-3">
                             <p>Comments:</p>
 
-                            <AddCommentModal task={task} isMenuModal={true} className="w-full bg-gray-100 rounded px-4 py-2"/>
+                            <AddCommentModal task={task} isMenuModal={true}
+                                             className="w-full bg-gray-100 rounded px-4 py-2"/>
 
                             {/* Loading state */}
                             {fetching && <LoadingSpinner message="Loading comments..."/>}
@@ -144,7 +162,7 @@ const TaskItemModal = ({icon: Icon, label, task, list, onClick, className, disab
                     </div>
                 </div>
             )}
-        </>
+        </div>
     );
 };
 

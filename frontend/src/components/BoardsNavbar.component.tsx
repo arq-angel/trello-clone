@@ -3,7 +3,6 @@ import {useNavigate, useMatch} from "react-router-dom";
 import {useSelector} from "react-redux";
 import type {RootState} from "../app/store.ts";
 import {useEffect} from "react";
-import {fetchBoardsByWorkspaceId} from "../features/boards/board.thunks.ts";
 import {setSelectedWorkspace} from "../features/workspaces/selectedWorkspace.slice.ts";
 import {setSelectedBoard} from "../features/boards/selectedBoard.slice.ts";
 import {Layers, Calendar, Star, Menu, Earth} from "lucide-react";

@@ -33,22 +33,11 @@ const listSlice = createSlice({
                 state.loading = false;
                 const {boardId, lists} = action.payload;
 
-                if (!state.listsByBoard[boardId]) {
-                    state.listsByBoard[boardId] = [];
-                }
+                // Sort lists by position before storing them
+                const sortedLists = [...lists].sort((a, b) => a.position - b.position);
 
-                // Update or add each list individually
-                for (const fetchedList of lists) {
-                    const index = state.listsByBoard[boardId].findIndex(b => b.id === fetchedList.id);
-
-                    if (index !== -1) {
-                        // Update existing list
-                        state.listsByBoard[boardId][index] = fetchedList;
-                    } else {
-                        // Add new list
-                        state.listsByBoard[boardId].push(fetchedList);
-                    }
-                }
+                // Replace the lists for this board
+                state.listsByBoard[boardId] = sortedLists;
             })
             .addCase(fetchListsByBoardId.rejected, (state, action) => {
                 state.loading = false;

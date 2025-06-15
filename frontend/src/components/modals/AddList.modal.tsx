@@ -4,6 +4,8 @@ import {useForm} from "react-hook-form";
 import MenuItem from "@/components/ui-components/MenuItem.ui.tsx";
 import {useListActions} from "@/hooks/useListActions.ts";
 import type {IBoard} from "@/models";
+import {useSelector} from "react-redux";
+import type {RootState} from "@/app/store.ts";
 
 interface FormValues {
     name: string;
@@ -33,9 +35,19 @@ const AddListModal = ({board, isMenuModal = false}: AddListModalProps) => {
         reset(); // Reset form state when closing
     };
 
+    const {listsByBoard} = useSelector((state: RootState) => state.lists);
+
     const onSubmit = async (data: FormValues) => {
         if (!board) return;
-        const {success} = await createList(data.name.trim(), board.id, 1);
+
+        // Get the existing lists for the current board
+        const currentLists = listsByBoard[board.id] || [];
+
+        // Determine the next position (e.g., append to end)
+        const nextPosition: number = (currentLists.length > 0 ? currentLists.length + 1 : 1);
+
+        const {success} = await createList(data.name.trim(), board.id, nextPosition);
+
         if (success) {
             closeModal();
         }

@@ -44,7 +44,7 @@ const UpdateListModal = ({list, board, setOpen}: UpdateListModalProps) => {
 
     const onSubmit = async (data: FormValues) => {
         if (!list && !board) return;
-        const {success} = await updateList(list.id, data.name.trim(), 1);
+        const {success} = await updateList(list.id, data.name.trim(), list.position);
         if (success) {
             closeModal();
             setOpen(false);

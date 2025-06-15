@@ -51,6 +51,7 @@ const WorkspacesDropDown = ({workspaces, selectedWorkspace, handleSelectWorkspac
         register,
         handleSubmit,
         setError,
+        reset,
         formState: {errors, isSubmitting},
     } = useForm<FormValues>();
 
@@ -62,6 +63,7 @@ const WorkspacesDropDown = ({workspaces, selectedWorkspace, handleSelectWorkspac
         if (success) {
             dispatch(setSelectedWorkspace(newWorkspace));
             navigate(`/workspaces/${newWorkspace.id}/boards`);
+            reset();
         }
     };
 

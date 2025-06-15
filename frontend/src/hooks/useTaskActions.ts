@@ -19,6 +19,7 @@ export const useTaskActions = <TFieldValues extends FieldValues = FieldValues>(
     createTask: typeof createTaskAction;
     deleteTask: typeof deleteTaskAction;
     updateTask: typeof updateTaskAction;
+    moveTask: typeof moveTaskAction;
     fetchTask: typeof fetchTaskAction;
     fetchAllTasks: typeof fetchAllTasksAction;
 } => {

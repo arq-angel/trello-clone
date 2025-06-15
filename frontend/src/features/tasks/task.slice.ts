@@ -30,24 +30,13 @@ const taskSlice = createSlice({
             })
             .addCase(fetchTasksByListId.fulfilled, (state, action) => {
                 state.loading = false;
-                const {listId, tasks} = action.payload;
+                const { listId, tasks } = action.payload;
 
-                if (!state.tasksByList[listId]) {
-                    state.tasksByList[listId] = [];
-                }
+                // Sort tasks by their position before setting
+                const sortedTasks = [...tasks].sort((a, b) => a.position - b.position);
 
-                // Update or add each task individually
-                for (const fetchedTask of tasks) {
-                    const index = state.tasksByList[listId].findIndex(b => b.id === fetchedTask.id);
-
-                    if (index !== -1) {
-                        // Update existing task
-                        state.tasksByList[listId][index] = fetchedTask;
-                    } else {
-                        // Add new task
-                        state.tasksByList[listId].push(fetchedTask);
-                    }
-                }
+                // Replace the entire task list for the given listId
+                state.tasksByList[listId] = sortedTasks;
             })
             .addCase(fetchTasksByListId.rejected, (state, action) => {
                 state.loading = false;

@@ -116,7 +116,7 @@ export const moveListAPI = async (
 
     // Step 2: Call backend API using centralized axios call wrapper
     const data: IAPIResponse<IList> = await callApi<IAPIResponse<IList>>((): Promise<AxiosResponse<IAPIResponse<IList>>> =>
-        api.patch<IAPIResponse<IList>>(`/lists/${validatedListId}`, validatedPayload)
+        api.patch<IAPIResponse<IList>>(`/lists/${validatedListId}/move`, validatedPayload)
     );
 
     // Step 3: Check if API response success flag is true and extract data

@@ -19,6 +19,7 @@ export const useListActions = <TFieldValues extends FieldValues = FieldValues>(
     createList: typeof createListAction;
     deleteList: typeof deleteListAction;
     updateList: typeof updateListAction;
+    moveList: typeof moveListAction;
     fetchList: typeof fetchListAction;
     fetchAllLists: typeof fetchAllListsAction;
 } => {
@@ -57,7 +58,7 @@ export const useListActions = <TFieldValues extends FieldValues = FieldValues>(
         }
     }, [dispatch, setError]);
 
-    const moveListAction = useCallback(async (listId: string, position: string) => {
+    const moveListAction = useCallback(async (listId: string, position: number) => {
         try {
             const movedList = await dispatch(moveList({listId, payload: {position}})).unwrap();
             toast.success("List moved successfully.");

@@ -4,6 +4,8 @@ import {useForm} from "react-hook-form";
 import MenuItem from "@/components/ui-components/MenuItem.ui.tsx";
 import type {IList} from "@/models";
 import {useTaskActions} from "@/hooks/useTaskActions.ts";
+import {useSelector} from "react-redux";
+import type { RootState } from "@/app/store";
 
 interface FormValues {
     title: string;
@@ -42,9 +44,19 @@ const AddTaskModal = ({
         reset(); // Reset form state when closing
     };
 
+    const {tasksByList} = useSelector((state: RootState) => state.tasks)
+
     const onSubmit = async (data: FormValues) => {
         if (!list) return;
-        const {success} = await createTask(data.title.trim(), "demo description", list.id, 1, "2025-12-29", "low");
+
+        // Get the existing lists for the current board
+        const currentTasks = tasksByList[list.id] || [];
+
+        // Determine the next position (e.g., append to end)
+        const nextPosition: number = (currentTasks.length > 0 ? currentTasks.length + 1 : 1);
+
+        const {success} = await createTask(data.title.trim(), "demo description", list.id, nextPosition, "2025-12-29", "low");
+
         if (success) {
             closeModal();
             setOpen(false);

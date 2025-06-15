@@ -126,7 +126,7 @@ export const moveTaskAPI = async (
 
     // Step 2: Call backend API using centralized axios call wrapper
     const data: IAPIResponse<ITask> = await callApi<IAPIResponse<ITask>>((): Promise<AxiosResponse<IAPIResponse<ITask>>> =>
-        api.patch<IAPIResponse<ITask>>(`/tasks/${validatedTaskId}`, validatedPayload)
+        api.patch<IAPIResponse<ITask>>(`/tasks/${validatedTaskId}/move`, validatedPayload)
     );
 
     // Step 3: Check if API response success flag is true and extract data

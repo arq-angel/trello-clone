@@ -41,7 +41,7 @@ const UpdateTaskModal = ({task, list, setOpen}: UpdateTaskModalProps) => {
 
     const onSubmit = async (data: FormValues) => {
         if (!task && !list) return;
-        const {success} = await updateTask(task.id, data.title.trim(), "demo description", list.id, 1, "2025-12-29", "low");
+        const {success} = await updateTask(task.id, data.title.trim(), "demo description", list.id, list.position, "2025-12-29", "low");
         if (success) {
             closeModal();
             setOpen(false);
